@@ -1,0 +1,75 @@
+[
+    {
+        "name": "factorial",
+        "description": "Calculates the factorial of a number.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "n": {
+                    "type": "integer",
+                    "description": "The integer to calculate the factorial of."
+                }
+            },
+            "required": ["n"]
+        }
+    },
+    {
+        "name": "is_prime",
+        "description": "Determines if a number is prime.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "n": {
+                    "type": "integer",
+                    "description": "The integer to check for primality."
+                }
+            },
+            "required": ["n"]
+        }
+    },
+    {
+        "name": "sum",
+        "description": "Adds an array of numbers with an optional multiplier for the sum.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "numbers": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "description": "The array of numbers to sum."
+                },
+                "multiplier": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "An optional multiplier to apply to the sum."
+                }
+            },
+            "required": ["numbers"]
+        }
+    },
+    {
+        "name": "range",
+        "description": "Generates a range of numbers between two boundaries.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "integer",
+                    "description": "The start of the range."
+                },
+                "end": {
+                    "type": "integer",
+                    "description": "The end of the range."
+                },
+                "step": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The optional step between each number in the range."
+                }
+            },
+            "required": ["start", "end"]
+        }
+    }
+]

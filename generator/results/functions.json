@@ -1,0 +1,98 @@
+[
+    {
+        "name": "get_products",
+        "description": "Returns information about the Uber products offered at a given location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "description": "Latitude component of location."
+                },
+                "longitude": {
+                    "type": "number",
+                    "description": "Longitude component of location."
+                }
+            },
+            "required": ["latitude", "longitude"]
+        }
+    },
+    {
+        "name": "get_price_estimates",
+        "description": "Returns an estimated price range for each product offered at a given location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start_latitude": {
+                    "type": "number",
+                    "description": "Latitude component of start location."
+                },
+                "start_longitude": {
+                    "type": "number",
+                    "description": "Longitude component of start location."
+                },
+                "end_latitude": {
+                    "type": "number",
+                    "description": "Latitude component of end location."
+                },
+                "end_longitude": {
+                    "type": "number",
+                    "description": "Longitude component of end location."
+                }
+            },
+            "required": ["start_latitude", "start_longitude", "end_latitude", "end_longitude"]
+        }
+    },
+    {
+        "name": "get_time_estimates",
+        "description": "Returns ETAs for all products offered at a given location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start_latitude": {
+                    "type": "number",
+                    "description": "Latitude component of start location."
+                },
+                "start_longitude": {
+                    "type": "number",
+                    "description": "Longitude component of start location."
+                },
+                "customer_uuid": {
+                    "type": "string",
+                    "description": "Unique customer identifier (optional)."
+                },
+                "product_id": {
+                    "type": "string",
+                    "description": "Unique identifier representing a specific product (optional)."
+                }
+            },
+            "required": ["start_latitude", "start_longitude"]
+        }
+    },
+    {
+        "name": "get_user_profile",
+        "description": "Returns information about the Uber user that has authorized with the application.",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+    {
+        "name": "get_user_activity",
+        "description": "Returns data about a user's lifetime activity with Uber.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "offset": {
+                    "type": "number",
+                    "description": "Offset the list of returned results by this amount (optional)."
+                },
+                "limit": {
+                    "type": "number",
+                    "description": "Number of items to retrieve (optional)."
+                }
+            },
+            "required": []
+        }
+    }
+]

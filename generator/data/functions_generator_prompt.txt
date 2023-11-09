@@ -1,0 +1,161 @@
+I will provide you with a NodeJS class that represents a client to an API. Your job will be receiving such a NodeJS class code and create a JSON structure that describes every method and parameter that the class exposes.
+
+This is an example of what I will input:
+
+const fs = require('fs');
+const { promisify } = require('util');
+const writeFileAsync = promisify(fs.writeFile);
+const axios = require('axios');
+const { PdfReader } = require('pdfreader');
+const natural = require('natural');
+const openai = require('openai');
+
+class ResearchHelper {
+  /**
+   * This method gets the top_k articles based on a user's query, sorted by relevance.
+   * It also downloads the files and stores them in arxiv_library.csv to be retrieved by the read_article_and_summarize.
+   * @param {string} query - The user's search query.
+   * @param {string} library - The filepath to the directory where the paper references are stored.
+   * @param {number} top_k - The number of top articles to retrieve.
+   * @returns {Promise<Object[]>} A promise that resolves to the list of article metadata.
+   */
+  async getArticles(query, library = 'paper_dir_filepath', top_k = 5) {
+    // Assuming that we have a similar arXiv API client and embedding request function in Node.js
+    const searchResults = await arxivSearch(query, top_k);
+    const result_list = [];
+
+    for (const result of searchResults) {
+      const result_dict = {
+        title: result.title,
+        summary: result.summary,
+        article_url: result.links[0],
+        pdf_url: result.links[1]
+      };
+      result_list.push(result_dict);
+
+      const response = await embeddingRequest(result.title);
+      const file_reference = [
+        result.title,
+        await result.downloadPdf('data_dir'),
+        response.data[0].embedding
+      ];
+
+      // Write to file
+      await this.appendToFile(library, file_reference);
+    }
+
+    return result_list;
+  }
+
+  /**
+   * Appends a row of data to a CSV file.
+   * @param {string} filepath - The path to the CSV file.
+   * @param {Array} data - The data to append.
+   */
+  async appendToFile(filepath, data) {
+    const csvLine = data.join(',') + '\n';
+    await writeFileAsync(filepath, csvLine, { flag: 'a' });
+  }
+
+  /**
+   * Takes a filepath to a PDF and returns a string of the PDF's contents.
+   * @param {string} filepath - The path to the PDF file.
+   * @returns {Promise<string>} A promise that resolves to the text contents of the PDF.
+   */
+  async readPdf(filepath) {
+    let pdfText = '';
+    let pageNumber = 0;
+    const reader = new PdfReader();
+
+    // Async wrapper for the PdfReader to read pages
+    const readPages = async (reader, filepath) => {
+      return new Promise((resolve, reject) => {
+        reader.parseFileItems(filepath, function (err, item) {
+          if (err) {
+            reject(err);
+          } else if (!item) {
+            resolve(pdfText); // End of file
+          } else if (item.text) {
+            pageNumber++;
+            pdfText += `${item.text}\nPage Number: ${pageNumber}\n`;
+          }
+        });
+      });
+    };
+
+    return await readPages(reader, filepath);
+  }
+
+}
+
+You should output the following structure:
+
+[
+    {
+        "name": "get_articles",
+        "description": """This function gets the top_k articles based on a user's query, sorted by relevance. It also downloads the files and stores them in arxiv_library.csv to be retrieved by the read_article_and_summarize.""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": f"""
+                    The user's search query.
+                            """,
+                },
+                "library": {
+                    "type": "string",
+                    "description": f"""
+                    The filepath to the directory where the paper references are stored.
+                            """,
+                },
+                "top_k": {
+                    "type": "int",
+                    "description": f"""
+                    The number of top articles to retrieve.
+                            """,
+                }
+            },
+            "required": ["query"],
+        },
+    },
+    {
+        "name": "read_pdf",
+        "description": """Takes a filepath to a PDF and returns a string of the PDF's contents.""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filepath": {
+                    "type": "string",
+                    "description": f"""
+                     The path to the PDF file.
+                            """,
+                }
+            },
+            "required": ["filepath"],
+        },
+    },
+    {
+        "name": "append_to_file",
+        "description": """Appends a row of data to a CSV file.  """,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filepath": {
+                    "type": "string",
+                    "description": f"""The path to the CSV file.""",
+                },
+                "data": {
+                    "type": "string",
+                    "description": f"""The data to append.""",
+                }
+            },
+            "required": ["filepath", "data"],
+        },
+    }
+]
+
+You must not generate any "returns" properties.
+To describe a function that accepts no parameters, provide the value {"type": "object", "properties": {}}.
+Note that the "parameters" need to be specific as a JSON Schema object.
+Please confirm that you understood what your job is and wait for my input of a NodeJS class code.
